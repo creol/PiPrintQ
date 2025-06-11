@@ -17,7 +17,7 @@ sudo usermod -aG lpadmin $USER
 sudo usermod -aG lp $USER
 
 # Install Flask and gunicorn
-sudo -H -u $USER pip3 install flask gunicorn
+sudo -H -u $USER pip3 install --break-system-packages flask gunicorn
 
 # Clone GitHub repo
 if [ -d "$TARGET_DIR" ]; then
