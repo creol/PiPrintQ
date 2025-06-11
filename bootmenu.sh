@@ -1,4 +1,3 @@
-cat << 'EOF' > ~/bootmenu.sh
 #!/bin/bash
 
 while true; do
@@ -38,4 +37,3 @@ while true; do
   echo ""
   read -p "Press enter to continue..."
 done
-EOF
