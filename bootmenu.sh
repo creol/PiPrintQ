@@ -9,9 +9,10 @@ while true; do
   echo "4. List available printers"
   echo "5. View recent archived files"
   echo "6. Launch web dashboard"
-  echo "7. Reset Print Counts (auto-backup)"
-  echo "8. Clear Archived Files"
-  echo "9. Exit"
+  echo "7. Reset Print Counts"
+  echo "8. Clear Archive Files"
+  echo "9. Update PiPrintQ from GitHub"
+  echo "10. Exit"
   echo "============================="
   read -p "Choose an option: " choice
 
@@ -22,21 +23,18 @@ while true; do
     4) lpstat -p ;;
     5) ls -lh /home/vote/PrintCompleted | tail ;;
     6) sudo systemctl restart web-dashboard.service ;;
-    7)
-      ts=$(date +"%Y-%m-%d_%H-%M-%S")
-      cp /home/vote/web_dashboard/stats.json "/home/vote/web_dashboard/stats_backup_$ts.json"
-      cat /home/vote/web_dashboard/stats.clear > /home/vote/web_dashboard/stats.json
-      echo "✅ Print counts reset and backed up to stats_backup_$ts.json"
+    7) cat /home/vote/web_dashboard/stats.clear > /home/vote/web_dashboard/stats.json ;;
+    8) rm -f /home/vote/PrintCompleted/* ;;
+    9)
+      echo "Updating from GitHub..."
+      cd /home/vote/web_dashboard && git pull
+      sudo systemctl restart piprintq.service
+      sudo systemctl restart web-dashboard.service
       ;;
-    8)
-      rm -f /home/vote/PrintCompleted/*
-      echo "✅ Archived files cleared."
-      ;;
-    9) exit ;;
+    10) exit ;;
     *) echo "Invalid option" ;;
   esac
 
   echo ""
   read -p "Press enter to continue..."
 done
-
