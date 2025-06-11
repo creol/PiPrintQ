@@ -4,8 +4,8 @@
 set -e
 
 REPO="https://github.com/creol/PiPrintQ"
-TARGET_DIR="/home/vote/web_dashboard"
-USER="vote"
+TARGET_DIR="/home/pi/web_dashboard"
+USER="pi"
 
 # Update and install dependencies
 echo "Updating system and installing dependencies..."

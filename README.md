@@ -28,12 +28,12 @@ This guide walks you through installing and running the **PiPrintQ** system on a
 * Download [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
 * Select **Raspberry Pi OS Lite (64-bit)**
 * Set hostname to `piprintq`
-* Enable SSH, set username: `vote`
+* Enable SSH, set username: `pi` and password: `print`
 
 ### 2. Boot Pi and SSH In
 
 ```bash
-ssh vote@<your-pi-ip>
+ssh pi@<your-pi-ip>
 ```
 
 ### 3. Run the Installer
@@ -53,9 +53,9 @@ cd ~
 
 ## 📂 Folder Structure
 
-* `/home/vote/PrintQueue` → Drop PDFs here to auto-print
-* `/home/vote/PrintCompleted` → Stores printed files for reprint/download
-* `/home/vote/web_dashboard/` → App files and configuration
+* `/home/pi/PrintQueue` → Drop PDFs here to auto-print
+* `/home/pi/PrintCompleted` → Stores printed files for reprint/download
+* `/home/pi/web_dashboard/` → App files and configuration
 
 ---
 
@@ -112,7 +112,7 @@ sudo systemctl restart web-dashboard.service
 * Download: `doit2times`
 * Delete all files: `skyfall`
 
-You can customize these in `/home/vote/web_dashboard/app.py`
+You can customize these in `/home/pi/web_dashboard/app.py`
 
 ---
 
