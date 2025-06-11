@@ -30,8 +30,8 @@ else
 fi
 
 # Install and enable systemd services
-sudo cp systemd/piprintq.service /etc/systemd/system/
-sudo cp systemd/web-dashboard.service /etc/systemd/system/
+sudo cp /home/pi/web_dashboard/systemd/piprintq.service /etc/systemd/system/
+sudo cp /home/pi/web_dashboard/systemd/web-dashboard.service /etc/systemd/system/
 sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl enable piprintq.service
