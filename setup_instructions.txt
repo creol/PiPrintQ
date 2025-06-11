@@ -1,0 +1,85 @@
+PiPrintQ Setup Instructions
+===========================
+
+📦 SYSTEM REQUIREMENTS
+- Raspberry Pi 4
+- Raspberry Pi OS Full (with Desktop)
+- 16GB+ microSD card
+- Internet connection
+- USB printers (up to 10)
+
+------------------------------------
+
+🔧 INITIAL SETUP
+1. Create necessary folders:
+   mkdir -p ~/PrintQueue ~/PrintCompleted ~/web_dashboard/templates
+
+2. Install dependencies:
+   sudo apt update
+   sudo apt install python3-pip cups
+   pip3 install flask watchdog
+
+3. Add user 'pi' to CUPS:
+   sudo usermod -aG lpadmin pi
+   sudo systemctl restart cups
+
+4. Open CUPS in browser:
+   http://localhost:631
+   - Add USB printers
+   - Name them Printer1 to Printer10 exactly
+
+------------------------------------
+
+📁 FILE SETUP
+- Save the following files to these paths:
+
+  ~/printer_watcher.py
+  ~/bootmenu.sh (chmod +x ~/bootmenu.sh)
+  ~/web_dashboard/app.py
+  ~/web_dashboard/templates/index.html
+  ~/setup_instructions.txt
+
+- Save piprintq.service to:
+  /etc/systemd/system/piprintq.service
+
+------------------------------------
+
+🔃 ENABLE AUTOSTART SERVICES
+1. Enable and start the printer watcher:
+   sudo systemctl daemon-reload
+   sudo systemctl enable piprintq.service
+   sudo systemctl start piprintq.service
+
+2. (Optional) Auto-launch boot menu at login:
+   echo '~/bootmenu.sh' >> ~/.bashrc
+
+------------------------------------
+
+🌐 RUNNING THE WEB DASHBOARD
+1. Start the Flask app:
+   cd ~/web_dashboard
+   python3 app.py
+
+2. Access from any device on your network:
+   http://piprintq.local:8080
+   (or http://<your-pi-ip>:8080)
+
+------------------------------------
+
+🖨️ TEST
+- Drop a `.pdf` into ~/PrintQueue
+- It will print on Printer1–10 with failover
+- After printing, it moves to ~/PrintCompleted
+- You can reprint from the dashboard
+
+------------------------------------
+
+🆘 TROUBLESHOOTING
+- Use 'lpstat -p' to check printers
+- Use 'journalctl -u piprintq.service -f' to watch logs
+- Ensure all printer names match exactly (Printer1 to Printer10)
+
+------------------------------------
+
+🎉 DONE!
+You're now running a lightweight, failover-enabled, 10-printer PDF print queue on your Pi.
