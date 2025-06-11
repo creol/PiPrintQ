@@ -8,7 +8,7 @@ This guide walks you through installing and running the **PiPrintQ** system on a
 * Round-robin printing to 10+ USB printers
 * Web dashboard for monitoring, reprinting, and downloading
 * Status lights, printer health, stats tracking
-* Easy update and reset tools
+* Easy update, reboot, and reset tools
 
 ---
 
@@ -36,6 +36,13 @@ This guide walks you through installing and running the **PiPrintQ** system on a
 ssh pi@<your-pi-ip>
 ```
 
+### 2.1. Install Git
+Install Git 
+
+```bash
+sudo apt update && sudo apt install -y git
+```
+
 ### 3. Run the Installer
 
 ```bash
@@ -48,6 +55,8 @@ curl -sSL https://raw.githubusercontent.com/creol/PiPrintQ/main/install.sh | bas
 cd ~
 ./bootmenu.sh
 ```
+
+> `bootmenu.sh` is installed to the home directory `~/` and launches automatically at login.
 
 ---
 
@@ -84,7 +93,13 @@ From the boot menu, choose:
 9. Update PiPrintQ from GitHub
 ```
 
-This pulls the latest code and restarts the services.
+This option:
+* **Discards local changes**
+* **Pulls the latest version**
+* **Reinstalls dependencies**
+* **Restarts services**
+
+> 🔒 This system is configured to only **pull from GitHub**, preventing any accidental overwrites or pushes from the Pi.
 
 ---
 
