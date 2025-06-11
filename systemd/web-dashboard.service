@@ -3,10 +3,10 @@ Description=PiPrintQ Web Dashboard
 After=network.target
 
 [Service]
-User=pi
+ExecStart=/home/pi/web_dashboard/venv/bin/python /home/pi/web_dashboard/app.py
 WorkingDirectory=/home/pi/web_dashboard
-ExecStart=/usr/local/bin/gunicorn -b 0.0.0.0:5000 app:app
 Restart=always
+User=pi
 
 [Install]
 WantedBy=multi-user.target
