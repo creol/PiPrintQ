@@ -11,6 +11,9 @@ fi
 
 cd /home/pi/web_dashboard || exit
 
+# Make bootmenu.sh executable
+chmod +x /home/pi/web_dashboard/bootmenu.sh
+
 # Pull latest changes from GitHub
 git fetch origin
 git checkout main || git checkout -b main origin/main
@@ -40,8 +43,6 @@ sudo systemctl enable web-dashboard.service
 # Start services
 sudo systemctl restart piprintq.service
 sudo systemctl restart web-dashboard.service
-
-chmod +x /home/pi/web_dashboard/bootmenu.sh
 
 # Ensure boot menu launches on login
 if ! grep -Fxq "/home/pi/web_dashboard/bootmenu.sh" /home/pi/.bashrc; then
