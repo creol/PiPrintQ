@@ -4,7 +4,6 @@
 mkdir -p /home/pi/PrintQueue
 mkdir -p /home/pi/PrintCompleted
 
-
 # Clone GitHub repo if not already present
 if [ ! -d /home/pi/web_dashboard ]; then
   git clone https://github.com/creol/PiPrintQ /home/pi/web_dashboard
@@ -22,11 +21,17 @@ git pull
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
-pip install -r requirements.txt
+
+# Install requirements if the file exists
+if [ -f requirements.txt ]; then
+  pip install -r requirements.txt
+else
+  echo "WARNING: requirements.txt not found, skipping pip install"
+fi
 
 # Install and enable systemd services
-sudo cp web_dashboard/systemd/piprintq.service /etc/systemd/system/
-sudo cp web_dashboard/systemd/web-dashboard.service /etc/systemd/system/
+sudo cp systemd/piprintq.service /etc/systemd/system/
+sudo cp systemd/web-dashboard.service /etc/systemd/system/
 sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl enable piprintq.service
@@ -42,4 +47,3 @@ if ! grep -Fxq "/home/pi/web_dashboard/bootmenu.sh" /home/pi/.bashrc; then
 fi
 
 echo "Installation complete. Reboot or re-login to use the boot menu."
-
