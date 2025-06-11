@@ -8,10 +8,10 @@ from datetime import datetime
 
 app = Flask(__name__, template_folder='templates')
 
-ARCHIVE_FOLDER = '/home/vote/PrintCompleted'
-STATS_FILE = '/home/vote/web_dashboard/stats.json'
-ARCHIVE_LOG = '/home/vote/web_dashboard/archive_log.json'
-PAUSE_FILE = '/home/vote/web_dashboard/printer_state.json'
+ARCHIVE_FOLDER = '/home/pi/PrintCompleted'
+STATS_FILE = '/home/pi/web_dashboard/stats.json'
+ARCHIVE_LOG = '/home/pi/web_dashboard/archive_log.json'
+PAUSE_FILE = '/home/pi/web_dashboard/printer_state.json'
 
 os.makedirs(ARCHIVE_FOLDER, exist_ok=True)
 
