@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=pi
 WorkingDirectory=/home/pi/web_dashboard
-ExecStart=/usr/bin/python3 /home/pi/web_dashboard/printer_watcher.py
+ExecStart=/home/pi/web_dashboard/venv/bin/python /home/pi/web_dashboard/printer_watcher.py
 Restart=always
 
 [Install]
