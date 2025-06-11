@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "🔧 Installing system dependencies..."
+sudo apt update
+sudo apt install -y git cups python3-pip python3-venv samba
+
 # Create required folders
 mkdir -p /home/pi/PrintQueue
 mkdir -p /home/pi/PrintCompleted
@@ -28,6 +32,7 @@ if [ -f requirements.txt ]; then
 else
   echo "WARNING: requirements.txt not found, skipping pip install"
 fi
+pip install flask watchdog
 
 # Install and enable systemd services
 sudo cp /home/pi/web_dashboard/systemd/piprintq.service /etc/systemd/system/
@@ -49,4 +54,37 @@ fi
 # Make bootmenu.sh executable
 chmod +x /home/pi/web_dashboard/bootmenu.sh
 
-echo "Installation complete. Reboot or re-login to use the boot menu."
+echo "🔧 Configuring CUPS and printers..."
+
+# Add user 'pi' to CUPS group
+sudo usermod -aG lpadmin pi
+sudo systemctl restart cups
+
+# Add 10 virtual printers
+for i in {1..10}; do
+  sudo lpadmin -p Printer$i -E -v file:/dev/null -m drv:///sample.drv/generic.ppd
+done
+
+# Configure Samba to share PrintQueue
+if ! grep -q "\[PrintQueue\]" /etc/samba/smb.conf; then
+  sudo tee -a /etc/samba/smb.conf > /dev/null <<EOF
+
+[PrintQueue]
+   path = /home/pi/PrintQueue
+   browseable = yes
+   writable = yes
+   guest ok = yes
+   create mask = 0777
+   directory mask = 0777
+   public = yes
+EOF
+fi
+
+# Restart Samba to apply share
+sudo systemctl restart smbd
+
+echo ""
+echo "✅ PiPrintQ installation complete!"
+echo "➡️  Reboot or re-login to start the system."
+echo "🖨️  Printers Printer1–Printer10 installed"
+echo "📁 /home/pi/PrintQueue shared on the network"
