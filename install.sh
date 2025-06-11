@@ -49,6 +49,8 @@ sudo systemctl restart cups
 cp "$TARGET_DIR/bootmenu.sh" /home/$USER/bootmenu.sh
 chmod +x /home/$USER/bootmenu.sh
 chown $USER:$USER /home/$USER/bootmenu.sh
+echo '~/bootmenu.sh' >> ~/.bashrc
+
 
 # Start services immediately
 sudo systemctl start piprintq.service
