@@ -17,9 +17,6 @@ git checkout main || git checkout -b main origin/main
 git reset --hard origin/main
 git clean -fd
 
-# Make bootmenu.sh executable
-chmod +x /home/pi/web_dashboard/bootmenu.sh
-
 # Set up Python virtual environment
 python3 -m venv venv
 source venv/bin/activate
@@ -48,5 +45,8 @@ sudo systemctl restart web-dashboard.service
 if ! grep -Fxq "/home/pi/web_dashboard/bootmenu.sh" /home/pi/.bashrc; then
   echo "/home/pi/web_dashboard/bootmenu.sh" >> /home/pi/.bashrc
 fi
+
+# Make bootmenu.sh executable
+chmod +x /home/pi/web_dashboard/bootmenu.sh
 
 echo "Installation complete. Reboot or re-login to use the boot menu."
