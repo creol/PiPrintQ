@@ -13,9 +13,10 @@ chmod +x /home/pi/web_dashboard/bootmenu.sh
 cd /home/pi/web_dashboard || exit
 
 # Pull latest changes from GitHub
-git reset --hard HEAD
+git fetch origin
+git checkout main || git checkout -b main origin/main
+git reset --hard origin/main
 git clean -fd
-git pull
 
 # Set up Python virtual environment
 python3 -m venv venv
