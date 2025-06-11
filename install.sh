@@ -9,7 +9,6 @@ if [ ! -d /home/pi/web_dashboard ]; then
   git clone https://github.com/creol/PiPrintQ /home/pi/web_dashboard
 fi
 
-chmod +x /home/pi/web_dashboard/bootmenu.sh
 cd /home/pi/web_dashboard || exit
 
 # Pull latest changes from GitHub
@@ -41,6 +40,8 @@ sudo systemctl enable web-dashboard.service
 # Start services
 sudo systemctl restart piprintq.service
 sudo systemctl restart web-dashboard.service
+
+chmod +x /home/pi/web_dashboard/bootmenu.sh
 
 # Ensure boot menu launches on login
 if ! grep -Fxq "/home/pi/web_dashboard/bootmenu.sh" /home/pi/.bashrc; then
