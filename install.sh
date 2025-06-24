@@ -67,6 +67,9 @@ fi
 sudo sed -i '/<Location \/>/,/<\/Location>/ { /Allow @local/d; /<\/Location>/i\  Allow @local }' /etc/cups/cupsd.conf
 sudo sed -i '/<Location \/admin>/,/<\/Location>/ { /Allow @local/d; /<\/Location>/i\  Allow @local }' /etc/cups/cupsd.conf
 
+# Ensure remote access stays enabled
+sudo cupsctl --remote-any --share-printers
+
 # Restart CUPS to apply configuration changes
 sudo systemctl restart cups
 
