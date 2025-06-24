@@ -36,27 +36,18 @@ This guide walks you through installing and running the **PiPrintQ** system on a
 ssh pi@<your-pi-ip>
 ```
 
-### 2.1. Install Git
+### 3. Install Git
 Install Git 
 
 ```bash
 sudo apt update && sudo apt install -y git
 ```
 
-### 3. Run the Installer
+### 4. Run the Installer
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/creol/PiPrintQ/main/install.sh | bash
 ```
-
-### 4. Launch Boot Menu (optional)
-
-```bash
-cd ~
-./bootmenu.sh
-```
-
-> `bootmenu.sh` is installed to the home directory `~/` and launches automatically at login.
 
 ---
 
