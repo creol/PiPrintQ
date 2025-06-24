@@ -101,3 +101,6 @@ echo "✅ PiPrintQ installation complete!"
 echo "➡️  Reboot or re-login to start the system."
 echo "🖨️  Printers Printer1–Printer10 installed"
 echo "📁 /home/pi/PrintQueue shared on the network"
+
+read -rp "Press Enter to reboot now or Ctrl+C to cancel..."
+sudo reboot

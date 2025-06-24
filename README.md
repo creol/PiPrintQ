@@ -48,9 +48,8 @@ sudo apt update && sudo apt install -y git
 curl -sSL https://raw.githubusercontent.com/creol/PiPrintQ/main/install.sh | bash
 ```
 
-The installer also opens the CUPS web interface to your local network so you can
-manage printers from any machine. Visit `http://piprintq:631` after installation
-to add or configure printers.
+When the installer finishes, press **Enter** to reboot when prompted.
+
 
 ---
 
@@ -70,8 +69,9 @@ In your browser:
 http://<pi-ip>:5000
 ```
 or
-...
-http://piprintq:5000
+
+* http://piprintq:5000
+
 ...
 
 Use this interface to:
@@ -81,6 +81,27 @@ Use this interface to:
 * Pause/resume printers
 * Reprint/download with password
 
+---
+
+## 🌐 Access the Printer Admin
+
+In your browser:
+
+```
+http://<pi-ip>:631/admin
+```
+or
+
+* http://piprintq:631/admin
+
+...
+
+Use this interface to:
+
+* Add printers
+* Manage printers 
+* Configure printers
+   
 ---
 
 ## 🔁 Updating from GitHub
