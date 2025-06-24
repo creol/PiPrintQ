@@ -48,6 +48,8 @@ sudo apt update && sudo apt install -y git
 curl -sSL https://raw.githubusercontent.com/creol/PiPrintQ/main/install.sh | bash
 ```
 
+When the installer finishes, press **Enter** to reboot when prompted.
+
 ---
 
 ## 📂 Folder Structure
