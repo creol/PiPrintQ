@@ -28,3 +28,41 @@ def test_files_returns_list(client, monkeypatch, tmp_path):
     data = resp.get_json()
     assert isinstance(data, list)
     assert data == file_list
+
+
+def _mock_lpstat(output, returncode=0):
+    class Result:
+        def __init__(self, out, code):
+            self.stdout = out
+            self.stderr = ''
+            self.returncode = code
+    def run(args, capture_output=True, text=True):
+        return Result(output.format(printer=args[-1]), returncode)
+    return run
+
+
+def test_printer_health_enabled(client, monkeypatch):
+    monkeypatch.setattr(flask_app.subprocess, 'run', _mock_lpstat('printer {printer} is idle. enabled since now'))
+    monkeypatch.setattr(flask_app, 'load_json', lambda *a, **k: {})
+    resp = client.get('/printer_health')
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data['Printer1'] == 'green'
+
+
+def test_printer_health_disabled(client, monkeypatch):
+    monkeypatch.setattr(flask_app.subprocess, 'run', _mock_lpstat('printer {printer} disabled since now'))
+    monkeypatch.setattr(flask_app, 'load_json', lambda *a, **k: {})
+    resp = client.get('/printer_health')
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data['Printer1'] == 'red'
+
+
+def test_printer_health_paused(client, monkeypatch):
+    monkeypatch.setattr(flask_app.subprocess, 'run', _mock_lpstat('printer {printer} is idle. enabled since now'))
+    monkeypatch.setattr(flask_app, 'load_json', lambda *a, **k: {'Printer1': 'paused'})
+    resp = client.get('/printer_health')
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data['Printer1'] == 'yellow'

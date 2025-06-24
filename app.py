@@ -94,11 +94,11 @@ def printer_health():
         printer = f"Printer{i}"
         try:
             result = subprocess.run(['lpstat', '-p', printer], capture_output=True, text=True)
-            output = result.stdout
-            if result.returncode == 0 and "enabled" in output and paused.get(printer) != "paused":
-                health[printer] = "green"
-            elif paused.get(printer) == "paused":
+            output = (result.stdout + result.stderr).lower()
+            if paused.get(printer) == "paused":
                 health[printer] = "yellow"
+            elif result.returncode == 0 and "disabled" not in output:
+                health[printer] = "green"
             else:
                 health[printer] = "red"
         except FileNotFoundError:
