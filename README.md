@@ -158,6 +158,26 @@ sudo lpadmin -p Printer2 -E -v file:/dev/null -m drv:///sample.drv/generic.ppd
 
 ---
 
+## 🪟 Windows Setup (Optional)
+
+Follow these steps on a Windows PC to direct print jobs to **PiPrintQ**:
+
+1. **Map the Print Queue**
+   - Open **File Explorer** and choose **This PC → Map network drive**.
+   - Pick drive letter **P:** and enter `\\piprintq\PrintQueue` as the folder.
+   - Check **Connect using different credentials** and log in with
+     user `pi` and password `print`.
+
+2. **Install and Configure PDFCreator**
+   - Download and install [PDFCreator](https://pdfcreator.org/).
+   - In PDFCreator open **Profiles** and edit the **Default Profile**.
+   - Enable **Auto-save** with the **Folder** set to `P:\`.
+   - Set the **Filename** to `<Title><DateTime:yyyyMMddHHmmss>`.
+   - Save the profile.
+
+All documents printed through PDFCreator will now appear in `P:\`,
+sending them straight to PiPrintQ.
+
 ## ✅ All Set!
 
 Your PiPrintQ system is now live and ready.
