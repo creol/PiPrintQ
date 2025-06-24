@@ -18,8 +18,27 @@ cd /home/pi/web_dashboard || exit
 # Pull latest changes from GitHub
 git fetch origin
 git checkout main || git checkout -b main origin/main
+
+# Preserve existing dashboard data before resetting the repo
+STATS_FILE=/home/pi/web_dashboard/stats.json
+ARCHIVE_LOG=/home/pi/web_dashboard/archive_log.json
+if [ -f "$STATS_FILE" ]; then
+  cp "$STATS_FILE" /tmp/stats.backup.json
+fi
+if [ -f "$ARCHIVE_LOG" ]; then
+  cp "$ARCHIVE_LOG" /tmp/archive_log.backup.json
+fi
+
 git reset --hard origin/main
 git clean -fd
+
+# Restore dashboard data after pulling updates
+if [ -f /tmp/stats.backup.json ]; then
+  mv /tmp/stats.backup.json "$STATS_FILE"
+fi
+if [ -f /tmp/archive_log.backup.json ]; then
+  mv /tmp/archive_log.backup.json "$ARCHIVE_LOG"
+fi
 
 # Set up Python virtual environment
 python3 -m venv venv
