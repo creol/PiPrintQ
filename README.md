@@ -104,21 +104,17 @@ Use this interface to:
    
 ---
 
-## 🔁 Updating from GitHub
+## 🔁 Reinstalling/Updating
 
 From the boot menu, choose:
 
 ```
-9. Update PiPrintQ from GitHub
+9. Run installer from GitHub
 ```
 
-This option:
-* **Discards local changes**
-* **Pulls the latest version**
-* **Reinstalls dependencies**
-* **Restarts services**
+This downloads and runs the latest `install.sh` script, giving you a clean installation of PiPrintQ. When it finishes you'll be prompted to reboot.
 
-> 🔒 This system is configured to only **pull from GitHub**, preventing any accidental overwrites or pushes from the Pi.
+> 🔒 The installer always pulls the latest code from GitHub, discarding any local changes.
 
 ---
 
