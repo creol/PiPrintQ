@@ -79,6 +79,12 @@ for i in {1..10}; do
 done
 
 # Configure Samba to share PrintQueue
+# Ensure the Samba user "pi" exists with password "print"
+if ! sudo pdbedit -L | grep -q '^pi:'; then
+  echo -e "print\nprint" | sudo smbpasswd -s -a pi
+fi
+
+# Configure Samba to share PrintQueue requiring authentication
 if ! grep -q "\[PrintQueue\]" /etc/samba/smb.conf; then
   sudo tee -a /etc/samba/smb.conf > /dev/null <<EOF
 
@@ -86,10 +92,11 @@ if ! grep -q "\[PrintQueue\]" /etc/samba/smb.conf; then
    path = /home/pi/PrintQueue
    browseable = yes
    writable = yes
-   guest ok = yes
+   guest ok = no
+   valid users = pi
    create mask = 0777
    directory mask = 0777
-   public = yes
+   public = no
 EOF
 fi
 
