@@ -5,7 +5,7 @@ This guide walks you through installing and running the **PiPrintQ** system on a
 ## ✅ Features
 
 * Auto-print PDFs from a watched folder
-* Round-robin printing to 10+ USB printers
+* Round-robin printing to 10+ USB printers for balanced use
 * Web dashboard for monitoring, reprinting, and downloading
 * Status lights, printer health, stats tracking
 * Easy update, reboot, and reset tools
