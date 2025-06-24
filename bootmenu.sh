@@ -38,7 +38,7 @@ while true; do
   sudo systemctl restart piprintq.service
   sudo systemctl restart web-dashboard.service
   echo "Update complete. Restarting boot menu..."
-  exec /home/pi/bootmenu.sh
+  exec /home/pi/web_dashboard/bootmenu.sh
   ;;
     10) sudo reboot ;;
     11) exit ;;
