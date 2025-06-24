@@ -66,6 +66,10 @@ In your browser:
 ```
 http://<pi-ip>:5000
 ```
+or
+...
+http://piprintq:5000
+...
 
 Use this interface to:
 
