@@ -37,7 +37,6 @@ ssh pi@<your-pi-ip>
 ```
 
 ### 3. Install Git
-Install Git 
 
 ```bash
 sudo apt update && sudo apt install -y git
