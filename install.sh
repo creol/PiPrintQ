@@ -58,6 +58,16 @@ echo "🔧 Configuring CUPS and printers..."
 
 # Add user 'pi' to CUPS group
 sudo usermod -aG lpadmin pi
+
+# Open the CUPS port to the local network and allow access
+sudo sed -i.bak -e 's/^Listen localhost:631/#&/' -e 's/^Listen 127.0.0.1:631/#&/' /etc/cups/cupsd.conf
+if ! grep -q '^Port 631' /etc/cups/cupsd.conf; then
+  sudo sed -i '1i Port 631' /etc/cups/cupsd.conf
+fi
+sudo sed -i '/<Location \/>/,/<\/Location>/ { /Allow @local/d; /<\/Location>/i\  Allow @local }' /etc/cups/cupsd.conf
+sudo sed -i '/<Location \/admin>/,/<\/Location>/ { /Allow @local/d; /<\/Location>/i\  Allow @local }' /etc/cups/cupsd.conf
+
+# Restart CUPS to apply configuration changes
 sudo systemctl restart cups
 
 # Add 10 virtual printers
