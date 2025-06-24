@@ -12,6 +12,8 @@ WATCH_FOLDER = '/home/pi/PrintQueue'
 COMPLETED_FOLDER = '/home/pi/PrintCompleted'
 STATS_FILE = '/home/pi/web_dashboard/stats.json'
 ARCHIVE_LOG = '/home/pi/web_dashboard/archive_log.json'
+PAUSE_FILE = '/home/pi/web_dashboard/printer_state.json'
+ROUND_ROBIN_FILE = '/home/pi/web_dashboard/round_robin.json'
 
 PRINTERS = [f'Printer{i}' for i in range(1, 11)]
 
@@ -28,14 +30,24 @@ def save_json(path, data):
         json.dump(data, f, indent=2)
 
 def print_file(filepath):
-    """Send the PDF to the first available printer.
+    """Send the PDF to an available printer using round robin.
 
     Returns the printer used on success or ``None`` on failure.
     """
-    for printer in PRINTERS:
+    paused = load_json(PAUSE_FILE, {})
+    rr = load_json(ROUND_ROBIN_FILE, {"index": 0})
+    start = rr.get("index", 0) % len(PRINTERS)
+
+    for offset in range(len(PRINTERS)):
+        idx = (start + offset) % len(PRINTERS)
+        printer = PRINTERS[idx]
+        if paused.get(printer) == "paused":
+            continue
         try:
             result = subprocess.run(['lp', '-d', printer, filepath], capture_output=True, text=True)
             if result.returncode == 0:
+                rr['index'] = (idx + 1) % len(PRINTERS)
+                save_json(ROUND_ROBIN_FILE, rr)
                 print(f"Printed {filepath} on {printer}")
                 return printer
             else:
@@ -70,6 +82,8 @@ class PDFHandler(FileSystemEventHandler):
 if __name__ == '__main__':
     os.makedirs(WATCH_FOLDER, exist_ok=True)
     os.makedirs(COMPLETED_FOLDER, exist_ok=True)
+    if not os.path.exists(ROUND_ROBIN_FILE):
+        save_json(ROUND_ROBIN_FILE, {"index": 0})
     observer = Observer()
     observer.schedule(PDFHandler(), path=WATCH_FOLDER, recursive=False)
     observer.start()
