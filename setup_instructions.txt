@@ -61,8 +61,8 @@ PiPrintQ Setup Instructions
    python3 app.py
 
 2. Access from any device on your network:
-   http://piprintq.local:8080
-   (or http://<your-pi-ip>:8080)
+   http://piprintq.local:5000
+   (or http://<your-pi-ip>:5000)
 
 ------------------------------------
 

@@ -12,8 +12,12 @@ ARCHIVE_FOLDER = '/home/pi/PrintCompleted'
 STATS_FILE = '/home/pi/web_dashboard/stats.json'
 ARCHIVE_LOG = '/home/pi/web_dashboard/archive_log.json'
 PAUSE_FILE = '/home/pi/web_dashboard/printer_state.json'
+ROUND_ROBIN_FILE = '/home/pi/web_dashboard/round_robin.json'
 
 os.makedirs(ARCHIVE_FOLDER, exist_ok=True)
+if not os.path.exists(ROUND_ROBIN_FILE):
+    with open(ROUND_ROBIN_FILE, 'w') as f:
+        json.dump({"index": 0}, f)
 
 @app.route('/')
 def index():
@@ -89,14 +93,18 @@ def printer_health():
     for i in range(1, 11):
         printer = f"Printer{i}"
         try:
-            output = subprocess.check_output(['lpstat', '-p', printer]).decode()
-            if "enabled" in output and paused.get(printer) != "paused":
-                health[printer] = "green"
-            elif paused.get(printer) == "paused":
+            result = subprocess.run(['lpstat', '-p', printer], capture_output=True, text=True)
+            output = (result.stdout + result.stderr).lower()
+            if paused.get(printer) == "paused":
                 health[printer] = "yellow"
+            elif result.returncode == 0 and "disabled" not in output:
+                health[printer] = "green"
             else:
                 health[printer] = "red"
-        except:
+        except FileNotFoundError:
+            # If lpstat is unavailable, assume printer is active unless paused
+            health[printer] = "yellow" if paused.get(printer) == "paused" else "green"
+        except Exception:
             health[printer] = "red"
     return jsonify(health)
 
@@ -128,10 +136,17 @@ def save_json(path, data):
 
 def get_next_printer():
     paused = load_json(PAUSE_FILE, {})
-    for i in range(10):
-        printer = f"Printer{i+1}"
-        if paused.get(printer) != 'paused':
-            return printer
+    rr = load_json(ROUND_ROBIN_FILE, {"index": 0})
+    start = rr.get("index", 0) % 10
+
+    for offset in range(10):
+        idx = (start + offset) % 10
+        printer = f"Printer{idx+1}"
+        if paused.get(printer) == 'paused':
+            continue
+        rr['index'] = (idx + 1) % 10
+        save_json(ROUND_ROBIN_FILE, rr)
+        return printer
     return None
 
 if __name__ == '__main__':

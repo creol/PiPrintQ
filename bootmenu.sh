@@ -11,7 +11,7 @@ while true; do
   echo "6. Launch web dashboard"
   echo "7. Reset Print Counts"
   echo "8. Clear Archive Files"
-  echo "9. Update from GitHub"
+  echo "9. Run installer from GitHub"
   echo "10. Reboot System"
   echo "11. Exit"
   echo "============================="
@@ -27,18 +27,8 @@ while true; do
     7) cat /home/pi/web_dashboard/stats.clear > /home/pi/web_dashboard/stats.json ;;
     8) rm -f /home/pi/PrintCompleted/* && echo "Archive cleared." ;;
     9)
-  echo "Updating from GitHub..."
-  cd /home/pi/web_dashboard || exit
-  git fetch origin
-  git reset --hard origin/main
-  git clean -fd
-  echo "Installing venv dependencies..."
-  /home/pi/web_dashboard/venv/bin/pip install -r requirements.txt
-  echo "Restarting services..."
-  sudo systemctl restart piprintq.service
-  sudo systemctl restart web-dashboard.service
-  echo "Update complete. Restarting boot menu..."
-  exec /home/pi/bootmenu.sh
+  echo "Running latest installer..."
+  curl -sSL https://raw.githubusercontent.com/creol/PiPrintQ/main/install.sh | bash
   ;;
     10) sudo reboot ;;
     11) exit ;;

@@ -5,7 +5,7 @@ This guide walks you through installing and running the **PiPrintQ** system on a
 ## ✅ Features
 
 * Auto-print PDFs from a watched folder
-* Round-robin printing to 10+ USB printers
+* Round-robin printing to 10+ USB printers for balanced use
 * Web dashboard for monitoring, reprinting, and downloading
 * Status lights, printer health, stats tracking
 * Easy update, reboot, and reset tools
@@ -37,7 +37,6 @@ ssh pi@<your-pi-ip>
 ```
 
 ### 3. Install Git
-Install Git 
 
 ```bash
 sudo apt update && sudo apt install -y git
@@ -48,6 +47,9 @@ sudo apt update && sudo apt install -y git
 ```bash
 curl -sSL https://raw.githubusercontent.com/creol/PiPrintQ/main/install.sh | bash
 ```
+
+When the installer finishes, press **Enter** to reboot when prompted.
+
 
 ---
 
@@ -67,8 +69,9 @@ In your browser:
 http://<pi-ip>:5000
 ```
 or
-...
-http://piprintq:5000
+
+* http://piprintq:5000
+
 ...
 
 Use this interface to:
@@ -80,21 +83,38 @@ Use this interface to:
 
 ---
 
-## 🔁 Updating from GitHub
+## 🌐 Access the Printer Admin
+
+In your browser:
+
+```
+http://<pi-ip>:631/admin
+```
+or
+
+* http://piprintq:631/admin
+
+...
+
+Use this interface to:
+
+* Add printers
+* Manage printers 
+* Configure printers
+   
+---
+
+## 🔁 Reinstalling/Updating
 
 From the boot menu, choose:
 
 ```
-9. Update PiPrintQ from GitHub
+9. Run installer from GitHub
 ```
 
-This option:
-* **Discards local changes**
-* **Pulls the latest version**
-* **Reinstalls dependencies**
-* **Restarts services**
+This downloads and runs the latest `install.sh` script, giving you a clean installation of PiPrintQ. When it finishes you'll be prompted to reboot.
 
-> 🔒 This system is configured to only **pull from GitHub**, preventing any accidental overwrites or pushes from the Pi.
+> 🔒 The installer always pulls the latest code from GitHub, discarding any local changes.
 
 ---
 
@@ -137,6 +157,26 @@ sudo lpadmin -p Printer2 -E -v file:/dev/null -m drv:///sample.drv/generic.ppd
 ```
 
 ---
+
+## 🪟 Windows Setup (Optional)
+
+Follow these steps on a Windows PC to direct print jobs to **PiPrintQ**:
+
+1. **Map the Print Queue**
+   - Open **File Explorer** and choose **This PC → Map network drive**.
+   - Pick drive letter **P:** and enter `\\piprintq\PrintQueue` as the folder.
+   - Check **Connect using different credentials** and log in with
+     user `pi` and password `print`.
+
+2. **Install and Configure PDFCreator**
+   - Download and install [PDFCreator](https://pdfcreator.org/).
+   - In PDFCreator open **Profiles** and edit the **Default Profile**.
+   - Enable **Auto-save** with the **Folder** set to `P:\`.
+   - Set the **Filename** to `<Title><DateTime:yyyyMMddHHmmss>`.
+   - Save the profile.
+
+All documents printed through PDFCreator will now appear in `P:\`,
+sending them straight to PiPrintQ.
 
 ## ✅ All Set!
 

@@ -18,8 +18,27 @@ cd /home/pi/web_dashboard || exit
 # Pull latest changes from GitHub
 git fetch origin
 git checkout main || git checkout -b main origin/main
+
+# Preserve existing dashboard data before resetting the repo
+STATS_FILE=/home/pi/web_dashboard/stats.json
+ARCHIVE_LOG=/home/pi/web_dashboard/archive_log.json
+if [ -f "$STATS_FILE" ]; then
+  cp "$STATS_FILE" /tmp/stats.backup.json
+fi
+if [ -f "$ARCHIVE_LOG" ]; then
+  cp "$ARCHIVE_LOG" /tmp/archive_log.backup.json
+fi
+
 git reset --hard origin/main
 git clean -fd
+
+# Restore dashboard data after pulling updates
+if [ -f /tmp/stats.backup.json ]; then
+  mv /tmp/stats.backup.json "$STATS_FILE"
+fi
+if [ -f /tmp/archive_log.backup.json ]; then
+  mv /tmp/archive_log.backup.json "$ARCHIVE_LOG"
+fi
 
 # Set up Python virtual environment
 python3 -m venv venv
@@ -58,6 +77,19 @@ echo "🔧 Configuring CUPS and printers..."
 
 # Add user 'pi' to CUPS group
 sudo usermod -aG lpadmin pi
+
+# Open the CUPS port to the local network and allow access
+sudo sed -i.bak -e 's/^Listen localhost:631/#&/' -e 's/^Listen 127.0.0.1:631/#&/' /etc/cups/cupsd.conf
+if ! grep -q '^Port 631' /etc/cups/cupsd.conf; then
+  sudo sed -i '1i Port 631' /etc/cups/cupsd.conf
+fi
+sudo sed -i '/<Location \/>/,/<\/Location>/ { /Allow @local/d; /<\/Location>/i\  Allow @local }' /etc/cups/cupsd.conf
+sudo sed -i '/<Location \/admin>/,/<\/Location>/ { /Allow @local/d; /<\/Location>/i\  Allow @local }' /etc/cups/cupsd.conf
+
+# Ensure remote access stays enabled
+sudo cupsctl --remote-any --share-printers
+
+# Restart CUPS to apply configuration changes
 sudo systemctl restart cups
 
 # Add 10 virtual printers
@@ -66,6 +98,12 @@ for i in {1..10}; do
 done
 
 # Configure Samba to share PrintQueue
+# Ensure the Samba user "pi" exists with password "print"
+if ! sudo pdbedit -L | grep -q '^pi:'; then
+  echo -e "print\nprint" | sudo smbpasswd -s -a pi
+fi
+
+# Configure Samba to share PrintQueue requiring authentication
 if ! grep -q "\[PrintQueue\]" /etc/samba/smb.conf; then
   sudo tee -a /etc/samba/smb.conf > /dev/null <<EOF
 
@@ -73,10 +111,11 @@ if ! grep -q "\[PrintQueue\]" /etc/samba/smb.conf; then
    path = /home/pi/PrintQueue
    browseable = yes
    writable = yes
-   guest ok = yes
+   guest ok = no
+   valid users = pi
    create mask = 0777
    directory mask = 0777
-   public = yes
+   public = no
 EOF
 fi
 
@@ -88,3 +127,6 @@ echo "✅ PiPrintQ installation complete!"
 echo "➡️  Reboot or re-login to start the system."
 echo "🖨️  Printers Printer1–Printer10 installed"
 echo "📁 /home/pi/PrintQueue shared on the network"
+
+read -rp "Press Enter to reboot now or Ctrl+C to cancel..."
+sudo reboot
