@@ -73,6 +73,15 @@ fi
 # Make bootmenu.sh executable
 chmod +x /home/pi/web_dashboard/bootmenu.sh
 
+# Create a helper command to launch the boot menu
+if [ ! -f /usr/local/bin/bm ]; then
+  sudo tee /usr/local/bin/bm > /dev/null <<'EOF'
+#!/bin/bash
+/home/pi/web_dashboard/bootmenu.sh "$@"
+EOF
+  sudo chmod +x /usr/local/bin/bm
+fi
+
 echo "🔧 Configuring CUPS and printers..."
 
 # Add user 'pi' to CUPS group
