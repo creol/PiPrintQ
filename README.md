@@ -150,6 +150,10 @@ sudo systemctl restart web-dashboard.service
 
 You can customize these in `/home/pi/web_dashboard/app.py`
 
+## 📝 lpstat Logging (Optional)
+
+Uncomment `LPSTAT_LOG_FILE` in `app.py` to write `lpstat` results to `/home/pi/web_dashboard/lpstat.log`. Comment it back out to disable logging.
+
 ---
 
 ## 🧪 Simulate Printers (Optional)
