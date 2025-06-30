@@ -3,6 +3,8 @@ import tempfile
 import os
 import pytest
 
+os.makedirs('/home/pi/web_dashboard', exist_ok=True)
+
 import app as flask_app
 
 @pytest.fixture
@@ -66,3 +68,15 @@ def test_printer_health_paused(client, monkeypatch):
     assert resp.status_code == 200
     data = resp.get_json()
     assert data['Printer1'] == 'yellow'
+
+
+def test_printer_health_logs_lpstat(client, monkeypatch, tmp_path):
+    log_file = tmp_path / 'lpstat.log'
+    monkeypatch.setattr(flask_app, 'LPSTAT_LOG_FILE', str(log_file), raising=False)
+    monkeypatch.setattr(flask_app.subprocess, 'run', _mock_lpstat('printer {printer} is idle. enabled since now'))
+    monkeypatch.setattr(flask_app, 'load_json', lambda *a, **k: {})
+    resp = client.get('/printer_health')
+    assert resp.status_code == 200
+    assert log_file.exists()
+    lines = log_file.read_text().splitlines()
+    assert any('Printer1:' in line for line in lines)
