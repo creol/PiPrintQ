@@ -50,6 +50,12 @@ curl -sSL https://raw.githubusercontent.com/creol/PiPrintQ/main/install.sh | bas
 
 When the installer finishes, press **Enter** to reboot when prompted.
 
+After reboot you can launch the boot menu from any directory by typing:
+
+```bash
+bm
+```
+
 
 ---
 
@@ -143,6 +149,10 @@ sudo systemctl restart web-dashboard.service
 * Delete all files: `skyfall`
 
 You can customize these in `/home/pi/web_dashboard/app.py`
+
+## 📝 lpstat Logging (Optional)
+
+Uncomment `LPSTAT_LOG_FILE` in `app.py` to write `lpstat` results to `/home/pi/web_dashboard/lpstat.log`. Comment it back out to disable logging.
 
 ---
 

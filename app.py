@@ -13,6 +13,8 @@ STATS_FILE = '/home/pi/web_dashboard/stats.json'
 ARCHIVE_LOG = '/home/pi/web_dashboard/archive_log.json'
 PAUSE_FILE = '/home/pi/web_dashboard/printer_state.json'
 ROUND_ROBIN_FILE = '/home/pi/web_dashboard/round_robin.json'
+# Uncomment the next line to log lpstat output for debugging
+# LPSTAT_LOG_FILE = '/home/pi/web_dashboard/lpstat.log'
 
 os.makedirs(ARCHIVE_FOLDER, exist_ok=True)
 if not os.path.exists(ROUND_ROBIN_FILE):
@@ -95,6 +97,9 @@ def printer_health():
         try:
             result = subprocess.run(['lpstat', '-p', printer], capture_output=True, text=True)
             output = (result.stdout + result.stderr).lower()
+            if 'LPSTAT_LOG_FILE' in globals():
+                with open(LPSTAT_LOG_FILE, 'a') as log_f:
+                    log_f.write(f"{datetime.now().isoformat()} {printer}: rc={result.returncode} {output.strip()}\n")
             if paused.get(printer) == "paused":
                 health[printer] = "yellow"
             elif result.returncode == 0 and "disabled" not in output:
