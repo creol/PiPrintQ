@@ -50,6 +50,12 @@ curl -sSL https://raw.githubusercontent.com/creol/PiPrintQ/main/install.sh | bas
 
 When the installer finishes, press **Enter** to reboot when prompted.
 
+After reboot you can launch the boot menu from any directory by typing:
+
+```bash
+bm
+```
+
 
 ---
 
