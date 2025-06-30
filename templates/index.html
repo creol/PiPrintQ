@@ -123,8 +123,16 @@
         const col = document.createElement('div');
         col.className = 'col';
         const paused = pausedPrinters.includes(printer);
+        // Determine status class based on printer health if available, default to red
+        let statusClass = 'dot-red';
+        if (window.printerHealth && window.printerHealth[printer]) {
+          const status = window.printerHealth[printer];
+          if (status === 'green') statusClass = 'dot-green';
+          else if (status === 'yellow') statusClass = 'dot-yellow';
+          else statusClass = 'dot-red';
+        }
         col.innerHTML = `
-          <span class="printer-status-dot dot-red" id="dot-${printer}"></span>
+          <span class="printer-status-dot ${statusClass}" id="dot-${printer}"></span>
           ${printer}: ${data.prints_by_printer[printer]} 
           <button class="tooltip-button" onclick="togglePause('${printer}')" title="${paused ? 'Resume' : 'Pause'} ${printer}">
             ${paused ? '▶️' : '⏸️'}
@@ -211,6 +219,7 @@
 
     async function updatePausedPrinters() {
       const health = await fetch('/printer_health').then(res => res.json());
+      window.printerHealth = health; // Store globally for use in refreshStats
       pausedPrinters = [];
       for (const [printer, status] of Object.entries(health)) {
         const dot = document.getElementById(`dot-${printer}`);
