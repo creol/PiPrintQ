@@ -2,6 +2,9 @@
 
 while true; do
   clear
+  IP=$(hostname -I | awk '{print $1}')
+  echo "Dashboard: http://$IP:5000"
+  echo "CUPS Admin: http://$IP:631/printers"
   echo "==== Pi Print Queue Menu ===="
   echo "1. Start print watcher"
   echo "2. Stop print watcher"
